@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="modal.css">
+
+  
+  <title>p5.js example</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .arrow {
+      background-color: aliceblue;
+      border-radius: 50px;
+      font-size: 3em;
+    } 
+
+    button {
+      border-radius: 50px;
+      background-color: aliceblue;
+      color: black;
+    }
+
+    #fixedbutton {
+      border-radius: 50px;
+      font-size: 3em;
+      position: fixed;
+      bottom: 20px;
+      right: 20px; 
+    } 
+
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="p5.js"></script>
+  <script src="clientRequests.js"></script>
+  <script src="Emoji.js"></script>
+  <script src="sketch.js"></script>
+  <script src="Grid.js"></script>
+
+</head>
+
+<body>
+  <div id="canvas"></div>
+
+  <div id="app_vue">
+     
+    <div>
+      <!-- Arrows to move in the world -->
+      <div style="text-align: center;">
+        <button class="arrow" @click="move_world_left">⏪</button>
+        <button class="arrow" @click="move_world_right">⏩</button>
+        <button class="arrow" @click="move_world_up">⏫</button>
+        <button class="arrow" @click="move_world_down">⏬</button>
+    </div>
+
+    <div v-if="isGridEmpty" style="text-align: right;">
+        <button @click="deleteGrid">🚮</button>
+    </div>
+
+    <!-- List of unallocated emojis -->
+    <div v-if="unallocated_items && unallocated_items.length">
+      <p>Unused emoji</p>
+      <span track-by="$index" v-for="item in unallocated_items" @click="select_unallocated_item(item)" style="font-size: 2em;">{{item.emoji}}</span>
+    </div>
+
+    
+    <!-- go back to todo list -->
+    <div style="text-align: center;">
+      <button id="fixedbutton" onclick="location.href='index.html';">📋</button>
+    </div>
+
+    <!-- MODAL DIALOG -->
+    <transition name="modal">  
+      <div v-if="emojiDialogOpen">
+        <div class="overlay" @click.self="emojiDialogOpen = false;">
+          <div class="modal">
+            <h4>{{ selectedGridItem.emoji }}</h4>
+            <p> {{ selectedGridItem.info }} </p>
+
+            <div>
+              <button v-if="!selected_unallocated_item" @click="moveGridItem(selectedGridItem)">Move</button>
+              <button @click="emojiDialogOpen = false;">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
+</body>
+
+</html>
